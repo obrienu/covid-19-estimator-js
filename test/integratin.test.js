@@ -1,4 +1,9 @@
-import { currentlyInfected, projectedInfected } from '../src/utils/utils';
+import {
+  currentlyInfected,
+  projectedInfected,
+  severeCases,
+  availableBed
+} from '../src/utils/utils';
 
 
 describe('Integrate currentlyInfected into projectedInfected', () => {
@@ -7,5 +12,12 @@ describe('Integrate currentlyInfected into projectedInfected', () => {
     const projectedSeverImpact = projectedInfected(currentlyInfected(10).severeImpact, 1, 'week');
     expect(projectedImpact).toBe(400);
     expect(projectedSeverImpact).toBe(2000);
+  });
+});
+
+describe('Integrate severeCase into projectedInfected', () => {
+  test('Projection for 500 projectedCases with available bedspace of 200', () => {
+    const bedSpace = availableBed(severeCases(500), 200);
+    expect(bedSpace).toBe(-5);
   });
 });

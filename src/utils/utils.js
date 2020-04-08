@@ -1,4 +1,4 @@
-export const currentlyInfected = (reportedCases) => {
+const currentlyInfected = (reportedCases) => {
   try {
     const obj = {};
     if (typeof reportedCases !== 'number') {
@@ -13,7 +13,7 @@ export const currentlyInfected = (reportedCases) => {
   }
 };
 
-export const projectedInfected = (infected, timeToElapse, periodType) => {
+const projectedInfected = (infected, timeToElapse, periodType) => {
   try {
     if (timeToElapse === 0) return infected;
     let period;
@@ -37,4 +37,23 @@ export const projectedInfected = (infected, timeToElapse, periodType) => {
   } catch (err) {
     return err.message;
   }
+};
+
+const severeCases = (numOfEstInfections) => {
+  const PERCENT = 15 / 100;
+  return Math.floor(numOfEstInfections * PERCENT);
+};
+
+const availableBed = (severeCasesByRequestedTime, totalHospitalBeds) => {
+  const PERCENT = 35 / 100;
+  const bedsAvailable = Math.floor(totalHospitalBeds * PERCENT);
+  return bedsAvailable > severeCasesByRequestedTime
+    ? bedsAvailable : bedsAvailable - severeCasesByRequestedTime;
+};
+
+module.exports = {
+  severeCases,
+  projectedInfected,
+  currentlyInfected,
+  availableBed
 };
