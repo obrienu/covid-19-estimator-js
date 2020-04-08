@@ -51,9 +51,110 @@ const availableBed = (severeCasesByRequestedTime, totalHospitalBeds) => {
     ? bedsAvailable : bedsAvailable - severeCasesByRequestedTime;
 };
 
+const caseForICUAndVentilators = (severeCasesByRequestedTime) => {
+  const ICUCases = Math.floor((5 / 100) * severeCasesByRequestedTime);
+  const ventilatorsCases = Math.floor((2 / 100) * severeCasesByRequestedTime);
+  return {
+    ICUCases,
+    ventilatorsCases
+  };
+};
+
+const estimatedLoseInIncome = (infectionsByRequestedTime,
+  timeToElapse, periodType, avgDailyIncomeInUSD, avgDailyIncomePopulation) => {
+  let period;
+  switch (periodType) {
+    case 'days':
+      period = timeToElapse;
+      break;
+    case 'week':
+    case 'weeks':
+      period = timeToElapse * 7;
+      break;
+    case 'month':
+    case 'months':
+      period = timeToElapse * 30;
+      break;
+    default:
+      throw new Error('period Type should either be days, weeks, or months');
+  }
+  return Math.floor(infectionsByRequestedTime
+    * avgDailyIncomeInUSD * avgDailyIncomePopulation * period);
+};
+
+const impactEstimator = (data) => {
+  const {
+    periodType,
+    timeToElapse,
+    reportedCases,
+    totalHospitalBeds,
+    region: {
+      avgDailyIncomeInUSD,
+      avgDailyIncomePopulation
+    }
+  } = data;
+
+  const { impact: currentlyInfectedPersons } = currentlyInfected(reportedCases);
+  const infectionsByRequestedTime = projectedInfected(currentlyInfectedPersons,
+    timeToElapse, periodType);
+  const severeCasesByRequestedTime = severeCases(infectionsByRequestedTime);
+  const hospitalBedsByRequestedTime = availableBed(severeCasesByRequestedTime,
+    totalHospitalBeds);
+  const { ICUCases, ventilatorsCases } = caseForICUAndVentilators(infectionsByRequestedTime);
+  const dollarsInFlight = estimatedLoseInIncome(infectionsByRequestedTime,
+    timeToElapse, periodType, avgDailyIncomeInUSD,
+    avgDailyIncomePopulation);
+  return ({
+    currentlyInfected: currentlyInfectedPersons,
+    infectionsByRequestedTime,
+    severeCasesByRequestedTime,
+    hospitalBedsByRequestedTime,
+    casesForICUByRequestedTime: ICUCases,
+    casesForVentilatorsByRequestedTime: ventilatorsCases,
+    dollarsInFlight
+  });
+};
+
+const severImpactEstimator = (data) => {
+  const {
+    periodType,
+    timeToElapse,
+    reportedCases,
+    totalHospitalBeds,
+    region: {
+      avgDailyIncomeInUSD,
+      avgDailyIncomePopulation
+    }
+  } = data;
+  const { severeImpact: currentlyInfectedPersons } = currentlyInfected(reportedCases);
+  const infectionsByRequestedTime = projectedInfected(currentlyInfectedPersons,
+    timeToElapse, periodType);
+  const severeCasesByRequestedTime = severeCases(infectionsByRequestedTime);
+  const hospitalBedsByRequestedTime = availableBed(severeCasesByRequestedTime,
+    totalHospitalBeds);
+  const { ICUCases, ventilatorsCases } = caseForICUAndVentilators(infectionsByRequestedTime);
+  const dollarsInFlight = estimatedLoseInIncome(infectionsByRequestedTime,
+    timeToElapse, periodType, avgDailyIncomeInUSD,
+    avgDailyIncomePopulation);
+
+  return ({
+    currentlyInfected: currentlyInfectedPersons,
+    infectionsByRequestedTime,
+    severeCasesByRequestedTime,
+    hospitalBedsByRequestedTime,
+    casesForICUByRequestedTime: ICUCases,
+    casesForVentilatorsByRequestedTime: ventilatorsCases,
+    dollarsInFlight
+  });
+};
+
 module.exports = {
   severeCases,
   projectedInfected,
   currentlyInfected,
-  availableBed
+  availableBed,
+  caseForICUAndVentilators,
+  estimatedLoseInIncome,
+  severImpactEstimator,
+  impactEstimator
 };
