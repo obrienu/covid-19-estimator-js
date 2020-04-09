@@ -48,13 +48,13 @@ const severeCases = (numOfEstInfections) => {
 const availableBed = (severeCasesByRequestedTime, totalHospitalBeds) => {
   const PERCENT = 35 / 100;
   const bedsAvailable = totalHospitalBeds * PERCENT;
-  return bedsAvailable > severeCasesByRequestedTime
+  return bedsAvailable >= severeCasesByRequestedTime
     ? bedsAvailable : Math.floor(bedsAvailable - severeCasesByRequestedTime);
 };
 
 const caseForICUAndVentilators = (severeCasesByRequestedTime) => {
   const ICUCases = Math.floor((5 / 100) * severeCasesByRequestedTime);
-  const ventilatorsCases = Math.floor((2 / 100) * severeCasesByRequestedTime);
+  const ventilatorsCases = Math.round((2 / 100) * severeCasesByRequestedTime);
   return {
     ICUCases,
     ventilatorsCases
