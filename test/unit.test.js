@@ -10,20 +10,20 @@ import {
 
 describe('Test the currentlyInfected function', () => {
   test('Should return correct result', () => {
-    expect(currentlyInfected(10)).toMatchObject({
+    expect(currentlyInfected(10, 200)).toMatchObject({
       impact: 100,
-      severeImpact: 500
+      severeImpact: 200
     });
   });
 });
 
 describe('Test projectedInfected function', () => {
   test('Should return correct result', () => {
-    expect(projectedInfected(220, 0, 'days')).toStrictEqual(220);
-    expect(projectedInfected(220, 28, 'days')).toStrictEqual(112640);
-    expect(projectedInfected(220, 1, 'weeks')).toStrictEqual(880);
-    expect(projectedInfected(220, 2, 'months')).toStrictEqual(230686720);
-    expect(projectedInfected(220, 30, 'days')).toStrictEqual(projectedInfected(220, 1, 'months'));
+    expect(projectedInfected(220, 0, 'days', 30000000)).toStrictEqual(220);
+    expect(projectedInfected(220, 28, 'days', 30000000)).toStrictEqual(112640);
+    expect(projectedInfected(220, 1, 'weeks', 30000000)).toStrictEqual(880);
+    expect(projectedInfected(220, 2, 'months', 30000000)).toStrictEqual(30000000);
+    expect(projectedInfected(220, 30, 'days', 30000000)).toStrictEqual(projectedInfected(220, 1, 'months'));
   });
 });
 

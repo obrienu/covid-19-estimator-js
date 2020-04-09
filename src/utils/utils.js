@@ -1,11 +1,11 @@
-const currentlyInfected = (reportedCases) => {
+const currentlyInfected = (reportedCases, population) => {
   try {
     const obj = {};
     if (typeof reportedCases !== 'number') {
       throw new Error('Reported cases must be a number');
     } else {
-      obj.impact = reportedCases * 10;
-      obj.severeImpact = reportedCases * 50;
+      obj.impact = ((reportedCases * 10) > population) ? population : (reportedCases * 10);
+      obj.severeImpact = ((reportedCases * 50) > population) ? population : (reportedCases * 50);
       return obj;
     }
   } catch (err) {
@@ -13,7 +13,7 @@ const currentlyInfected = (reportedCases) => {
   }
 };
 
-const projectedInfected = (infected, timeToElapse, periodType) => {
+const projectedInfected = (infected, timeToElapse, periodType, population) => {
   try {
     if (timeToElapse === 0) return infected;
     let period;
@@ -33,7 +33,8 @@ const projectedInfected = (infected, timeToElapse, periodType) => {
         throw new Error('period Type should either be days, weeks, or months');
     }
     const factor = Math.floor(period / 3);
-    return infected * (2 ** factor);
+    const projectedNumber = infected * (2 ** factor);
+    return projectedNumber >= population ? population : projectedNumber;
   } catch (err) {
     return err.message;
   }
@@ -88,15 +89,16 @@ const impactEstimator = (data) => {
     timeToElapse,
     reportedCases,
     totalHospitalBeds,
+    population,
     region: {
       avgDailyIncomeInUSD,
       avgDailyIncomePopulation
     }
   } = data;
 
-  const { impact: currentlyInfectedPersons } = currentlyInfected(reportedCases);
+  const { impact: currentlyInfectedPersons } = currentlyInfected(reportedCases, population);
   const infectionsByRequestedTime = projectedInfected(currentlyInfectedPersons,
-    timeToElapse, periodType);
+    timeToElapse, periodType, population);
   const severeCasesByRequestedTime = severeCases(infectionsByRequestedTime);
   const hospitalBedsByRequestedTime = availableBed(severeCasesByRequestedTime,
     totalHospitalBeds);
@@ -121,14 +123,15 @@ const severImpactEstimator = (data) => {
     timeToElapse,
     reportedCases,
     totalHospitalBeds,
+    population,
     region: {
       avgDailyIncomeInUSD,
       avgDailyIncomePopulation
     }
   } = data;
-  const { severeImpact: currentlyInfectedPersons } = currentlyInfected(reportedCases);
+  const { severeImpact: currentlyInfectedPersons } = currentlyInfected(reportedCases, population);
   const infectionsByRequestedTime = projectedInfected(currentlyInfectedPersons,
-    timeToElapse, periodType);
+    timeToElapse, periodType, population);
   const severeCasesByRequestedTime = severeCases(infectionsByRequestedTime);
   const hospitalBedsByRequestedTime = availableBed(severeCasesByRequestedTime,
     totalHospitalBeds);
