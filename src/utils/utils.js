@@ -53,7 +53,7 @@ const availableBed = (severeCasesByRequestedTime, totalHospitalBeds) => {
 };
 
 const caseForICUAndVentilators = (severeCasesByRequestedTime) => {
-  const ICUCases = ((5 / 100) * severeCasesByRequestedTime);
+  const ICUCases = Math.floor((5 / 100) * severeCasesByRequestedTime);
   const ventilatorsCases = ((2 / 100) * severeCasesByRequestedTime);
   return {
     ICUCases,
