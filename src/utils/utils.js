@@ -1,11 +1,11 @@
-const currentlyInfected = (reportedCases, population) => {
+const currentlyInfected = (reportedCases) => {
   try {
     const obj = {};
     if (typeof reportedCases !== 'number') {
       throw new Error('Reported cases must be a number');
     } else {
-      obj.impact = ((reportedCases * 10) > population) ? population : (reportedCases * 10);
-      obj.severeImpact = ((reportedCases * 50) > population) ? population : (reportedCases * 50);
+      obj.impact = (reportedCases * 10);
+      obj.severeImpact = (reportedCases * 50);
       return obj;
     }
   } catch (err) {
@@ -13,7 +13,7 @@ const currentlyInfected = (reportedCases, population) => {
   }
 };
 
-const projectedInfected = (infected, timeToElapse, periodType, population) => {
+const projectedInfected = (infected, timeToElapse, periodType) => {
   try {
     if (timeToElapse === 0) return infected;
     let period;
@@ -34,7 +34,7 @@ const projectedInfected = (infected, timeToElapse, periodType, population) => {
     }
     const factor = Math.floor(period / 3);
     const projectedNumber = infected * (2 ** factor);
-    return projectedNumber >= population ? population : projectedNumber;
+    return projectedNumber;
   } catch (err) {
     return err.message;
   }
