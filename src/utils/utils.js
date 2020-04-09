@@ -32,7 +32,7 @@ const projectedInfected = (infected, timeToElapse, periodType) => {
       default:
         throw new Error('period Type should either be days, weeks, or months');
     }
-    const factor = Math.ceil(period / 3);
+    const factor = Math.floor(period / 3);
     const projectedNumber = infected * (2 ** factor);
     return projectedNumber;
   } catch (err) {
@@ -42,7 +42,7 @@ const projectedInfected = (infected, timeToElapse, periodType) => {
 
 const severeCases = (numOfEstInfections) => {
   const PERCENT = 15 / 100;
-  return Math.ceil(numOfEstInfections * PERCENT);
+  return Math.floor(numOfEstInfections * PERCENT);
 };
 
 const availableBed = (severeCasesByRequestedTime, totalHospitalBeds) => {
@@ -53,8 +53,8 @@ const availableBed = (severeCasesByRequestedTime, totalHospitalBeds) => {
 };
 
 const caseForICUAndVentilators = (severeCasesByRequestedTime) => {
-  const ICUCases = Math.ceil((5 / 100) * severeCasesByRequestedTime);
-  const ventilatorsCases = Math.ceil((2 / 100) * severeCasesByRequestedTime);
+  const ICUCases = Math.floor((5 / 100) * severeCasesByRequestedTime);
+  const ventilatorsCases = Math.floor((2 / 100) * severeCasesByRequestedTime);
   return {
     ICUCases,
     ventilatorsCases
