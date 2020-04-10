@@ -103,7 +103,7 @@ const impactEstimator = (data) => {
   const severeCasesByRequestedTime = severeCases(infectionsByRequestedTime);
   const hospitalBedsByRequestedTime = availableBed(severeCasesByRequestedTime,
     totalHospitalBeds);
-  const { ICUCases, ventilatorsCases } = caseForICUAndVentilators(infectionsByRequestedTime);
+  const { ICUCases, ventilatorsCases } = caseForICUAndVentilators(severeCasesByRequestedTime);
   const dollarsInFlight = estimatedLoseInIncome(infectionsByRequestedTime,
     timeToElapse, periodType, avgDailyIncomeInUSD,
     avgDailyIncomePopulation);
