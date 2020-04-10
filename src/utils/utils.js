@@ -65,6 +65,7 @@ const estimatedLoseInIncome = (infectionsByRequestedTime,
   timeToElapse, periodType, avgDailyIncomeInUSD, avgDailyIncomePopulation) => {
   let period;
   switch (periodType) {
+    case 'day':
     case 'days':
       period = timeToElapse;
       break;
@@ -77,7 +78,7 @@ const estimatedLoseInIncome = (infectionsByRequestedTime,
       period = timeToElapse * 30;
       break;
     default:
-      throw new Error('period Type should either be days, weeks, or months');
+      period = timeToElapse;
   }
   const lose = infectionsByRequestedTime
   * avgDailyIncomeInUSD * avgDailyIncomePopulation * period;
@@ -103,7 +104,7 @@ const impactEstimator = (data) => {
   const severeCasesByRequestedTime = severeCases(infectionsByRequestedTime);
   const hospitalBedsByRequestedTime = availableBed(severeCasesByRequestedTime,
     totalHospitalBeds);
-  const { ICUCases, ventilatorsCases } = caseForICUAndVentilators(severeCasesByRequestedTime);
+  const { ICUCases, ventilatorsCases } = caseForICUAndVentilators(infectionsByRequestedTime);
   const dollarsInFlight = estimatedLoseInIncome(infectionsByRequestedTime,
     timeToElapse, periodType, avgDailyIncomeInUSD,
     avgDailyIncomePopulation);
@@ -136,7 +137,7 @@ const severImpactEstimator = (data) => {
   const severeCasesByRequestedTime = severeCases(infectionsByRequestedTime);
   const hospitalBedsByRequestedTime = availableBed(severeCasesByRequestedTime,
     totalHospitalBeds);
-  const { ICUCases, ventilatorsCases } = caseForICUAndVentilators(severeCasesByRequestedTime);
+  const { ICUCases, ventilatorsCases } = caseForICUAndVentilators(infectionsByRequestedTime);
   const dollarsInFlight = estimatedLoseInIncome(infectionsByRequestedTime,
     timeToElapse, periodType, avgDailyIncomeInUSD,
     avgDailyIncomePopulation);
