@@ -80,9 +80,9 @@ const estimatedLoseInIncome = (infectionsByRequestedTime,
     default:
       period = timeToElapse;
   }
-  const lose = infectionsByRequestedTime
-  * avgDailyIncomeInUSD * avgDailyIncomePopulation * period;
-  return Number(lose.toFixed(2));
+  const lose = (infectionsByRequestedTime
+  * avgDailyIncomeInUSD * avgDailyIncomePopulation) / period;
+  return Math.trunc(lose);
 };
 
 const impactEstimator = (data) => {
