@@ -32,7 +32,7 @@ const projectedInfected = (infected, timeToElapse, periodType) => {
       default:
         throw new Error('period Type should either be days, weeks, or months');
     }
-    const factor = Math.floor(period / 3);
+    const factor = Math.trunc(period / 3);
     const projectedNumber = infected * (2 ** factor);
     return projectedNumber;
   } catch (err) {
@@ -49,11 +49,11 @@ const availableBed = (severeCasesByRequestedTime, totalHospitalBeds) => {
   const PERCENT = 35 / 100;
   const bedsAvailable = totalHospitalBeds * PERCENT;
   return Math.trunc(bedsAvailable) >= severeCasesByRequestedTime
-    ? Math.trunc(bedsAvailable) : Math.trunc(bedsAvailable - severeCasesByRequestedTime);
+    ? Math.trunc(bedsAvailable) : Math.trunc(bedsAvailable) - severeCasesByRequestedTime;
 };
 
 const caseForICUAndVentilators = (severeCasesByRequestedTime) => {
-  const ICUCases = ((5 / 100) * severeCasesByRequestedTime);
+  const ICUCases = Math.trunc((5 / 100) * severeCasesByRequestedTime);
   const ventilatorsCases = Math.trunc((2 / 100) * severeCasesByRequestedTime);
   return {
     ICUCases,
@@ -79,8 +79,9 @@ const estimatedLoseInIncome = (infectionsByRequestedTime,
     default:
       throw new Error('period Type should either be days, weeks, or months');
   }
-  return Math.trunc(infectionsByRequestedTime
-    * avgDailyIncomeInUSD * avgDailyIncomePopulation * period);
+  const lose = infectionsByRequestedTime
+  * avgDailyIncomeInUSD * avgDailyIncomePopulation * period;
+  return Number(lose.toFixed(2));
 };
 
 const impactEstimator = (data) => {
