@@ -49,7 +49,7 @@ const availableBed = (severeCasesByRequestedTime, totalHospitalBeds) => {
   const PERCENT = 35 / 100;
   const bedsAvailable = totalHospitalBeds * PERCENT;
   return Math.trunc(bedsAvailable) >= severeCasesByRequestedTime
-    ? Math.trunc(bedsAvailable) : Math.trunc(bedsAvailable) - severeCasesByRequestedTime;
+    ? Math.trunc(bedsAvailable) : Math.trunc(bedsAvailable - severeCasesByRequestedTime);
 };
 
 const caseForICUAndVentilators = (severeCasesByRequestedTime) => {
